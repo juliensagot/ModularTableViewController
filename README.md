@@ -1,12 +1,9 @@
 # BetterTableViewController
-Make UITableView great again
 
-### Features
+### Goals
+Creating a controller for a `UITableView` with multiple section is often really tedious.
+This project aims to make this task as easy as possible by bringing section modularity and type-safe cell dequeuing.
 
-- [x] Modularity  thanks to section based controller
-- [x] Type-safe cell dequeuing
-
----
 
 ## One controller per section
 
@@ -37,10 +34,24 @@ protocol TableViewSectionDelegate {
     func didSelectRow(at indexPath: IndexPath, in tableView: UITableView)
 }
 ```
+
+Notice the `registerCellTypes(in tableView: UITableView)` function.
+Let's provide a default implementation:
+
+```swift
+extension TableViewSectionDataSource {
+
+    func registerCellTypes(in tableView: UITableView) {
+        self.cellTypes.forEach { cellType in
+            tableView.register(cellType, forCellReuseIdentifier: cellType.reuseIdentifier)
+        }
+    }
+}
+```
 	
 ---
 
-### Step 2: Preparing our `TableViewController`
+### Step 2: `TableViewController` boilerplate
 
 Let's create a basic TableViewController:
 
@@ -54,6 +65,7 @@ class MyModularTableViewController: UIViewController {
     private let sectionControllers: [TableViewSectionDataSource] = []
         
     // MARK: - View Lifecycle
+
     override func loadView() {
         self.view = UITableView(frame: UIScreen.main.bounds, style: .grouped)
     }
@@ -70,7 +82,7 @@ class MyModularTableViewController: UIViewController {
 }
 ```
 
-Let's implement the `UITableViewDataSource` protocol so we can delegate everything to our section controllers:
+Then implement the `UITableViewDataSource` protocol so we can delegate everything to our section controllers:
 
 ```swift
 extension MyModularTableViewController: UITableViewDataSource {
@@ -80,8 +92,8 @@ extension MyModularTableViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let sectionManager = self.sectionControllers[indexPath.section]
-        return sectionManager.cellForRow(at: indexPath, in: tableView)
+        let sectionController = self.sectionControllers[indexPath.section]
+        return sectionController.cellForRow(at: indexPath, in: tableView)
     }
 
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -100,12 +112,12 @@ extension MyModularTableViewController: UITableViewDataSource {
     
 ## Type-safe cell dequeuing
 
-`UITableView` requires providing a `String` for dequeuing a cell, making its API really fragile and prone to typos.
+`UITableView` requires providing a `String` for dequeuing a cell, which is really prone to typos.
 Let's see how we can fix it and make it type-safe.
 
 ### `Reusable` protocol to the rescue
 	
-What if we could automatically provide a unique reuseIdentifier for every UITableView classes?
+What if we could automatically provide a unique reuseIdentifier for every `UITableViewCell` classes and subclasses?<br>
 Well, we can, with a protocol and a `UITableViewCell` extension:
 
 ```swift
@@ -122,11 +134,11 @@ extension Reusable {
 extension UITableViewCell: Reusable {}
 ```
     
-Now every  classes and subclasses of `UITableViewCell` will automatically have a unique reuseIdentifier, based on their name.
+Now every  classes and subclasses of `UITableViewCell` will automatically (thanks to our default implementation) have a unique `reuseIdentifier`, based on their name.
 
 To fully unleash the power of our `Reusable` protocol, we'll add an extension to `UITableView`:
 
-```
+```swift
 extension UITableView {
 
     func dequeueReusableCell<T: UITableViewCell>(ofType cellType: T.Type, for indexPath: IndexPath) -> T {
@@ -138,5 +150,14 @@ extension UITableView {
 }
 ```
     
-With that simple extension, we're now able to dequeue a cell by providing its type, as a bonus, the function returns the correct type of the cell,
+With that simple extension, we're now able to dequeue a cell by providing a type and not a string identifier, as a bonus, the function returns a cell with a correct type,
 no more casting 🤟.
+
+## SectionController Example
+
+
+
+
+## Wrap everything together
+
+
