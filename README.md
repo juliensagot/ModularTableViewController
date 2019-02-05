@@ -150,7 +150,7 @@ extension UITableView {
 }
 ```
     
-With that simple extension, we're now able to dequeue a cell by providing a type and not a string identifier, as a bonus, the function returns a cell with a correct type,
+With that simple extension, we're now able to dequeue a cell by providing a type and not a string identifier, as a bonus, the function returns a cell with the correct type,
 no more casting 🤟.
 
 ## SectionController Example
