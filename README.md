@@ -1,9 +1,14 @@
 # Modular TableViewController
 
 ### Motivation
-Creating a static `UITableViewController` is pretty straightforward but become really messy when you have a lot of sections.
-This sample project aims to solve that issue by providing a solution to delegate data source & delegate methods to section controllers.
+Creating a static `UITableViewController` is pretty straightforward but become really messy when you have a lot of sections.<br>
+This sample project aims to solve that issue by providing a solution to delegate data source & delegate methods to section controllers without requiring another DSL.<br>
 Having an object managing each section of the tableView brings you a lot of modularity.
+
+This is what we're going to build:
+
+![Result imaget](Example.jpg)
+
 
 ## TableViewSectionDataSource & TableViewSectionDelegate protocols
 
@@ -31,7 +36,7 @@ protocol TableViewSectionDelegate {
 
 **Please note that I only added methods that I needed for that particular example, feel free to add any other needed method to each respecting protocols.**
 
-Let's provide a default implementation for the  `registerCellTypes(in tableView: UITableView)` function, allowing us to easily register our cells in the tableView:
+Let's provide a default implementation to the  `registerCellTypes(in tableView: UITableView)` function, allowing us to easily register our cells in the tableView:
 
 ```swift
 extension TableViewSectionDataSource {
@@ -68,6 +73,7 @@ class MyModularTableViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
     
+        // Register our cells
         self.sections.forEach { section in
             section.registerCellTypes(in: self.tableView)
         }
@@ -113,7 +119,7 @@ Let's see how we can make it type-safe.
 ### `Reusable` protocol to the rescue
 	
 What if we could automatically provide a unique reuseIdentifier for every `UITableViewCell` classes and subclasses?<br>
-Fortunately we can, with a protocol and a `UITableViewCell` extension:
+Fortunately we can, with the help of a simple protocol and  `UITableViewCell` extension:
 
 ```swift
 protocol Reusable {
@@ -146,7 +152,7 @@ extension UITableView {
 ```
     
 With that simple extension, we're now able to dequeue a cell by providing a type and not a string identifier, as a bonus, the function returns a cell with the correct type,
-no more casting 🤟.
+no more casting 🎉.
 
 ## SectionController Example
 
