@@ -156,9 +156,45 @@ no more casting 🎉.
 
 ## SectionController Example
 
+```swift
+struct HelloWorldSectionController: TableViewSectionDataSource, TableViewSectionDelegate {
 
+    var cellTypes = [UITableViewCell.self]
 
+    var numberOfRows: Int {
+        return 2
+    }
+
+    var headerTitle: String? {
+        return "Hello World Section Title"
+    }
+
+    var footerTitle: String? {
+        return "This is a Hello World section footer."
+    }
+
+    func cellForRow(at indexPath: IndexPath, in tableView: UITableView) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(ofType: UITableViewCell.self, for: indexPath)
+
+        let texts = ["Hello", "World"]
+        cell.textLabel?.text = texts[indexPath.row]
+        return cell
+    }
+
+    func shouldHighlightRow(at indexPath: IndexPath, in tableView: UITableView) -> Bool {
+        return false
+    }
+}
+```
+
+To include that section into your tableView, simply update your `sectionControllers` array like so:
+
+```swift
+private let sectionControllers: [TableViewSectionDataSource] = [ HelloWorldSectionController()]
+```
 
 ## Wrap everything together
+
+Check the `Example.playground` to see a live example.
 
 
