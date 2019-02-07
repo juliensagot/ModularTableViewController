@@ -74,8 +74,8 @@ class MyModularTableViewController: UIViewController {
         super.viewDidLoad()
     
         // Register our cells
-        self.sections.forEach { section in
-            section.registerCellTypes(in: self.tableView)
+        self.sectionControllers.forEach { sectionController in
+            sectionController.registerCellTypes(in: self.tableView)
         }
         self.tableView.dataSource = self
         self.tableView.delegate = self

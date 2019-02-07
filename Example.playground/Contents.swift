@@ -24,8 +24,8 @@ final class MyModularTableViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.sectionControllers.forEach { section in
-            section.registerCellTypes(in: self.tableView)
+        self.sectionControllers.forEach { sectionController in
+            sectionController.registerCellTypes(in: self.tableView)
         }
         self.tableView.dataSource = self
         self.tableView.delegate = self
