@@ -2,8 +2,8 @@
 
 ### Motivation
 Creating a static `UITableViewController` is pretty straightforward but become really messy when you have a lot of sections.<br>
-This sample project aims to solve that issue by providing a solution to delegate data source & delegate methods to section controllers without requiring another DSL.<br>
-Having an object managing each section of the tableView brings you a lot of modularity.
+This sample project aims to solve that issue by providing **a solution to delegate data source & delegate methods to section controllers without requiring another DSL**.<br>
+Having an object managing each section of the tableView brings you a lot of **modularity**.
 
 This is what we're going to build:
 
@@ -119,7 +119,7 @@ Let's see how we can make it type-safe.
 ### `Reusable` protocol to the rescue
 	
 What if we could automatically provide a unique reuseIdentifier for every `UITableViewCell` classes and subclasses?<br>
-Fortunately we can, with the help of a simple protocol and  `UITableViewCell` extension:
+Fortunately we can, with the help of a simple protocol and a  `UITableViewCell` extension:
 
 ```swift
 protocol Reusable {
