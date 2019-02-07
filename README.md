@@ -1,19 +1,13 @@
-# BetterTableViewController
+# Modular TableViewController
 
-### Goals
-Creating a controller for a `UITableView` with multiple section is often really tedious.
-This project aims to make this task as easy as possible by bringing section modularity and type-safe cell dequeuing.
+### Motivation
+Creating a static `UITableViewController` is pretty straightforward but become really messy when you have a lot of sections.
+This sample project aims to solve that issue by providing a solution to delegate data source & delegate methods to section controllers.
+Having an object managing each section of the tableView brings you a lot of modularity.
 
+## TableViewSectionDataSource & TableViewSectionDelegate protocols
 
-## One controller per section
-
-Our goal is to be able to have a controller per section.
-That way we'll have **a very modular table view**.
-
----
-
-### Step 1: Creating necessary protocols
-Let's create two protocols:
+Let's create the following protocols:
 
 ```swift
 protocol TableViewSectionDataSource {
@@ -35,8 +29,9 @@ protocol TableViewSectionDelegate {
 }
 ```
 
-Notice the `registerCellTypes(in tableView: UITableView)` function.
-Let's provide a default implementation:
+**Please note that I only added methods that I needed for that particular example, feel free to add any other needed method to each respecting protocols.**
+
+Let's provide a default implementation for the  `registerCellTypes(in tableView: UITableView)` function, allowing us to easily register our cells in the tableView:
 
 ```swift
 extension TableViewSectionDataSource {
@@ -51,7 +46,7 @@ extension TableViewSectionDataSource {
 	
 ---
 
-### Step 2: `TableViewController` boilerplate
+###  `TableViewController` boilerplate
 
 Let's create a basic TableViewController:
 
@@ -110,15 +105,15 @@ extension MyModularTableViewController: UITableViewDataSource {
 }
 ```
     
-## Type-safe cell dequeuing
+## Bonus: type-safe cell dequeuing
 
 `UITableView` requires providing a `String` for dequeuing a cell, which is really prone to typos.
-Let's see how we can fix it and make it type-safe.
+Let's see how we can make it type-safe.
 
 ### `Reusable` protocol to the rescue
 	
 What if we could automatically provide a unique reuseIdentifier for every `UITableViewCell` classes and subclasses?<br>
-Well, we can, with a protocol and a `UITableViewCell` extension:
+Fortunately we can, with a protocol and a `UITableViewCell` extension:
 
 ```swift
 protocol Reusable {
@@ -134,7 +129,7 @@ extension Reusable {
 extension UITableViewCell: Reusable {}
 ```
     
-Now every  classes and subclasses of `UITableViewCell` will automatically (thanks to our default implementation) have a unique `reuseIdentifier`, based on their name.
+Now every  classes and subclasses of `UITableViewCell` will automatically (thanks to our default implementation) have a unique `reuseIdentifier`, based on their name. 🙌🏻
 
 To fully unleash the power of our `Reusable` protocol, we'll add an extension to `UITableView`:
 
