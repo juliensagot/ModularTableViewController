@@ -3,13 +3,15 @@
 import UIKit
 import PlaygroundSupport
 
+typealias TableViewSectionController = TableViewSectionDataSource & TableViewSectionDelegate
+
 final class MyModularTableViewController: UIViewController {
 
     private var tableView: UITableView {
         return self.view as! UITableView
     }
 
-    private let sectionControllers: [TableViewSectionDataSource] = [
+    private let sectionControllers: [TableViewSectionController] = [
         HelloWorldSectionController(),
         MultiCellTypesSectionController(),
         FizzBuzzSectionController()
@@ -59,22 +61,17 @@ extension MyModularTableViewController: UITableViewDataSource {
 extension MyModularTableViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
-        guard let sectionDelegate = self.sectionControllers[indexPath.section] as? TableViewSectionDelegate
-        else { return true }
-
-        return sectionDelegate.shouldHighlightRow(at: indexPath, in: self.tableView)
+        return self.sectionControllers[indexPath.section].shouldHighlightRow(at: indexPath, in: self.tableView)
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if let sectionDelegate = self.sectionControllers[indexPath.section] as? TableViewSectionDelegate {
-            sectionDelegate.didSelectRow(at: indexPath, in: self.tableView)
-        }
+        self.sectionControllers[indexPath.section].didSelectRow(at: indexPath, in: self.tableView)
     }
 }
 
 // ---------------------------------------------------------------------------
 
-struct HelloWorldSectionController: TableViewSectionDataSource, TableViewSectionDelegate {
+struct HelloWorldSectionController: TableViewSectionController {
 
     var cellTypes = [UITableViewCell.self]
 
@@ -105,7 +102,7 @@ struct HelloWorldSectionController: TableViewSectionDataSource, TableViewSection
 
 // ---------------------------------------------------------------------------
 
-struct MultiCellTypesSectionController: TableViewSectionDataSource, TableViewSectionDelegate {
+struct MultiCellTypesSectionController: TableViewSectionController {
 
     var cellTypes: [UITableViewCell.Type] = [UITableViewCell.self, SwitchControlTableViewCell.self]
 
@@ -156,7 +153,7 @@ struct MultiCellTypesSectionController: TableViewSectionDataSource, TableViewSec
 
 // ---------------------------------------------------------------------------
 
-struct FizzBuzzSectionController: TableViewSectionDataSource, TableViewSectionDelegate {
+struct FizzBuzzSectionController: TableViewSectionController {
 
     var cellTypes = [UITableViewCell.self]
 

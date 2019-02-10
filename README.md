@@ -34,6 +34,12 @@ protocol TableViewSectionDelegate {
 }
 ```
 
+Also declare the following `typealias`, which will be useful:
+
+```swift
+typealias TableViewSectionController = TableViewSectionDataSource & TableViewSectionDelegate
+```
+
 **Please note that I only added methods that I needed for that particular example, feel free to add any other needed method to each respecting protocols.**
 
 Let's provide a default implementation to the  `registerCellTypes(in tableView: UITableView)` function, allowing us to easily register our cells in the tableView:
@@ -62,7 +68,7 @@ class MyModularTableViewController: UIViewController {
         return self.view as! UITableView
     }
     
-    private let sectionControllers: [TableViewSectionDataSource] = []
+    private let sectionControllers: [TableViewSectionController] = []
         
     // MARK: - View Lifecycle
 
@@ -157,7 +163,7 @@ no more casting 🎉.
 ## SectionController Example
 
 ```swift
-struct HelloWorldSectionController: TableViewSectionDataSource, TableViewSectionDelegate {
+struct HelloWorldSectionController: TableViewSectionController {
 
     var cellTypes = [UITableViewCell.self]
 
@@ -190,7 +196,7 @@ struct HelloWorldSectionController: TableViewSectionDataSource, TableViewSection
 To include that section into your tableView, simply update your `sectionControllers` array like so:
 
 ```swift
-private let sectionControllers: [TableViewSectionDataSource] = [ HelloWorldSectionController()]
+private let sectionControllers: [TableViewSectionController] = [ HelloWorldSectionController()]
 ```
 
 ## Wrap everything together
